@@ -6,12 +6,22 @@ import { parse } from 'https://jslib.k6.io/papaparse/5.1.1/index.js';
 const baseUrl='https://pokeapi.co/api/v2';
 
 export const options = {
-   vus: 5,
-   duration: '30s',
-    thresholds: {
-        http_req_duration: ['p(95)<500'],
-        checks: ['rate > 0.95']
+  scenarios: {
+    metodo_get_pokemon_escenario: {
+      executor: 'ramping-vus',
+      startVUs: 10,
+      stages: [
+        { duration: '10s', target: 10 },
+        { duration: '10s', target: 20 },
+        { duration: '10s', target: 0 },
+      ],
+      exec: 'default', // Nombre de la función a ejecutar
     },
+  },
+  thresholds: {
+    http_req_duration: ['p(95)<500', 'p(50)<300'],
+    checks: ['rate > 0.95'],
+  }
 };
 
 
@@ -46,6 +56,6 @@ else{
 export function handleSummary(data){
 console.log('Generando el reporte HTML...');
 return  {
-"pokeget.html": htmlReport(data),
+"reports/pokeget.html": htmlReport(data),
 };
 }

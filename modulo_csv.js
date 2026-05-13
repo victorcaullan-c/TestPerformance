@@ -6,23 +6,36 @@ import { parse } from 'https://jslib.k6.io/papaparse/5.1.1/index.js';
 
 // Cargar CSV una sola vez
 const data = new SharedArray('datos', function () {
-  return parse(open('./data.csv'), { header: true }).data;
+  const parsedRows = parse(open('data/data.csv'), { header: true }).data;
+  // Filtrar filas válidas
+  return parsedRows.filter(row => row.user && row.password);
 });
 
 const baseUrl='https://fakestoreapi.com/auth/login';
 
+
 export const options = {
-   vus: 5,
-   duration: '30s',
-    thresholds: {
-        http_req_duration: ['p(95)<500'],
-        checks: ['rate > 0.95']
+  scenarios: {
+    login_escenario: {
+      executor: 'ramping-vus',
+      startVUs: 10,
+      stages: [
+        { duration: '10s', target: 10 },
+        { duration: '10s', target: 20 },
+        { duration: '10s', target: 0 },
+      ],
+      exec: 'default', // Nombre de la función a ejecutar
     },
+  },
+  thresholds: {
+    http_req_duration: ['p(95)<500', 'p(50)<300'],
+    checks: ['rate > 0.95'],
+  }
 };
 
 export default function () {
-  const row = data[__VU % data.length];
-    // Realiza una petición POST al API de pizzas con los parámetros especificados
+  // Selecciona usuario aleatorio válido
+    const row = data[Math.floor(Math.random() * data.length)];
     const response = http.post(baseUrl,
         JSON.stringify({
             "username": row.user,
@@ -59,6 +72,6 @@ else{
  export function handleSummary(data){
     console.log('Generando el reporte HTML...');
     return  {
-    "moduloCSV.html": htmlReport(data),
+    "reports/loginConCSV.html": htmlReport(data),
     };
     }

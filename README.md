@@ -4,11 +4,18 @@ Este proyecto contiene pruebas de performance para dos APIs usando k6. Una de la
 
 ## Características principales
 
-- 5 usuarios virtuales (VUs)
+- 20 usuarios virtuales (VUs)
 - En un tiempo estimado de 30s
 - Se genera un reporte html al finalizar las ejecuciones
-- Reporte se generar en la ubicacion del archivo ejecutado.
+- Ruta de reporte `reports`, en archivos .html.
+- Ruta de archivo `csv` con usuarios de prueba es la carpeta`data`.
 - Uso de archivos CSV para alimentar datos a una de las APIs
+- MS de prueba `fakestoreapi.com/auth/login` y `pokeapi.co/api/v2`.
+
+
+## Tecnologías utilizadas
+- ***k6 (Chocolatey v2.7.1)***
+
 
 ## Ejecución rápida
 
@@ -18,9 +25,10 @@ Este proyecto contiene pruebas de performance para dos APIs usando k6. Una de la
 
 
 ## Datos en archivo CSV
-### user,password
-   donero   ,ewedon
-kevinryan,kev02937@
-johnd    ,m38rmF$
-derek    ,jklg*_56
-mor_2314 ,83r5^_ 
+| user      | password   |
+|-----------|-----------|
+| donero    | ewedon    |
+| kevinryan | kev02937@ |
+| johnd     | m38rmF$   |
+| derek     | jklg*_56  |
+| mor_2314  | 83r5^_    |
